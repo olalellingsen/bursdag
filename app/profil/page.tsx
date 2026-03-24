@@ -46,7 +46,7 @@ export default function ProfilePage() {
   return (
     <main className="max-w-3xl mx-auto space-y-6">
       <section className="space-y-2">
-        <h1>Min profil</h1>
+        <h1>Profil</h1>
         <Link href="/" className="underline">
           Tilbake til forsiden
         </Link>

@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <main className="max-w-3xl mx-auto space-y-8">
       <section className="space-y-5">
-        <h1>Velkommen til min bursdag!</h1>
+        <h1>Velkommen til Olas bursdag!</h1>
         <h2>
           16. april 2026 kl 19.00 på{" "}
           <Link

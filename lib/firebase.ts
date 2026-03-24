@@ -1,4 +1,5 @@
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -10,5 +11,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Reuse existing app instance during hot reload to avoid duplicate-app errors.
+const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);

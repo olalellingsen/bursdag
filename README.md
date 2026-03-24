@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bursdag App
 
-## Getting Started
+Next.js app with Firebase Google authentication.
 
-First, run the development server:
+## Prerequisites
+
+1. A Firebase project
+2. Firebase Authentication enabled
+3. Node.js 20+
+
+## Environment Variables
+
+Create `.env` in the project root with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Firebase Console Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Go to Authentication -> Sign-in method.
+2. Enable `Google` provider.
+3. Add authorized domains in Authentication -> Settings -> Authorized domains:
+   - `localhost`
+   - your production domain (for example `your-app.vercel.app`)
+4. Confirm the `authDomain` in `.env` matches your Firebase project.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Run Locally
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open http://localhost:3000.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Auth Flow Implemented
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. User opens the app on `/`.
+2. User clicks `Logg inn med Google`.
+3. App signs in via Firebase `signInWithPopup`.
+4. Authenticated user is redirected to `/gjester`.
 
-## Deploy on Vercel
+## Useful Commands
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```

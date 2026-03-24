@@ -47,18 +47,19 @@
 }
 
 :root {
-  --background: oklch(31.121% 0.16356 302.907);
-  --foreground: oklch(92.494% 0.00011 271.152);
-  --card: oklch(40.072% 0.20773 302.343);
+  --background: rgb(67, 0, 115);
+  --foreground: rgb(234, 234, 234);
+  --card: rgb(107, 0, 184);
+  --primary: rgb(0, 101, 190);
+
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(50.403% 0.14509 250.632);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(84.212% 0.0001 271.152);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -104,11 +105,12 @@ h2 {
 h3 {
   @apply text-2xl;
 }
+
 p {
   @apply text-xl;
 }
 
-button {
+.button {
   @apply bg-primary text-primary-foreground rounded-md px-4 py-2 hover:bg-primary/90 transition-colors hover:cursor-pointer;
 }
 

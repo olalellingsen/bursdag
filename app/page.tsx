@@ -26,19 +26,24 @@ export default function Home() {
 
   return (
     <main className="max-w-3xl mx-auto space-y-8">
-      <section className="space-y-4">
+      <section className="space-y-5">
         <h1>Velkommen til min bursdag!</h1>
-        <h2>Jeg blir 28 år og vil feire med deg!</h2>
-        <h3>
+        <h2>
           16. april 2026 kl 19.00 på{" "}
           <Link
             href="https://maps.app.goo.gl/L5Jje98GK4MY3RfL8"
-            className="underline"
+            className="underline hover:no-underline"
             target="_blank"
           >
             Fyrhuset Kuba
           </Link>
-        </h3>
+        </h2>
+
+        <p>
+          Jeg blir 28 år og vil ha deg med på feiringen! 🎉 Jeg har booket 2.
+          etasjen på Fyrhuset fra 19.00 og til det stenger kl 23.00, også kan vi
+          sikkert dra videre til f.eks Løkka etter dette for de som vil!
+        </p>
       </section>
 
       {loading ? <p>Laster...</p> : null}
@@ -49,16 +54,19 @@ export default function Home() {
         <section>
           <GuestList />
 
-          <div className="card text-center fixed bottom-4 right-4 left-4 space-x-4">
+          <footer className="card text-center fixed bottom-4 right-4 left-4 space-x-4 max-w-3xl mx-auto">
             <p>Innlogget som {user.displayName ?? user.email}</p>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="inline-flex rounded-md bg-black px-4 py-2 text-white"
-            >
-              Logg ut
-            </button>
-          </div>
+
+            <div className="flex gap-2 justify-center">
+              <Link href="/profile" className="button">
+                Rediger profil
+              </Link>
+
+              <button type="button" onClick={handleSignOut} className="button">
+                Logg ut
+              </button>
+            </div>
+          </footer>
         </section>
       ) : null}
     </main>

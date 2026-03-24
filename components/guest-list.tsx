@@ -52,8 +52,8 @@ export default function GuestList() {
   }, []);
 
   return (
-    <section className="card space-y-4">
-      <h2>Påmeldte</h2>
+    <section className="space-y-4 pb-24 card">
+      <h2 className="text-center">Påmeldte</h2>
 
       {loading ? <p>Laster gjester...</p> : null}
       {error ? <p className="text-red-700">{error}</p> : null}
@@ -63,17 +63,17 @@ export default function GuestList() {
       ) : null}
 
       {!loading && !error && guests.length > 0 ? (
-        <ul className="space-y-3">
+        <ul className="grid gap-4">
           {guests.map((guest) => (
             <li key={guest.id}>
-              <div className="flex items-center gap-3">
+              <div className="flex gap-3 items-center">
                 {guest.photoURL ? (
                   <Image
                     width={50}
                     height={50}
                     src={guest.photoURL}
                     alt={`Profilbilde av ${guest.displayName}`}
-                    className="rounded-full object-cover size-16"
+                    className="rounded-full object-cover aspect-square size-20"
                   />
                 ) : (
                   <CircleUser

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Schoolbell } from "next/font/google";
 import "./globals.css";
+import { User } from "lucide-react";
+import UserFooter from "@/components/user-footer";
 
 const schoolbell = Schoolbell({
   subsets: ["latin"],
@@ -18,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={schoolbell.className}>
-      <body className={`antialiased p-5`}>{children}</body>
+      <body className={`antialiased`}>
+        <main className="p-4 py-10">{children}</main>
+      </body>
     </html>
   );
 }

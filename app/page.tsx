@@ -6,6 +6,7 @@ import Signup from "@/components/signup";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import GuestList from "@/components/guest-list";
+import UserFooter from "@/components/user-footer";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,7 +26,7 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-3xl mx-auto space-y-8">
+    <main className="max-w-3xl mx-auto flex flex-col gap-8">
       <section className="space-y-5">
         <h1>Velkommen til Olas bursdag!</h1>
         <h2>
@@ -42,32 +43,19 @@ export default function Home() {
         <p>
           Jeg blir 28 år og vil ha deg med på feiringen! 🎉 Jeg har booket 2.
           etasjen på Fyrhuset fra 19.00 og til det stenger kl 23.00, også kan vi
-          sikkert dra videre til f.eks Løkka etter dette for de som vil!
+          sikkert dra videre til et sted på f.eks Løkka etter dette for de som
+          vil!
         </p>
       </section>
 
-      {loading ? <p>Laster...</p> : null}
-
-      {!loading && !user ? <Signup /> : null}
+      <section className="space-y-8">
+        {loading ? <p>Laster...</p> : null}
+        {!loading && !user ? <Signup /> : null}
+        {!loading && user ? <GuestList /> : null}
+      </section>
 
       {!loading && user ? (
-        <section>
-          <GuestList />
-
-          <footer className="card text-center fixed bottom-4 right-4 left-4 space-x-4 max-w-3xl mx-auto">
-            <p>Innlogget som {user.displayName ?? user.email}</p>
-
-            <div className="flex gap-2 justify-center">
-              <Link href="/profile" className="button">
-                Rediger profil
-              </Link>
-
-              <button type="button" onClick={handleSignOut} className="button">
-                Logg ut
-              </button>
-            </div>
-          </footer>
-        </section>
+        <UserFooter user={user} onSignOut={handleSignOut} />
       ) : null}
     </main>
   );

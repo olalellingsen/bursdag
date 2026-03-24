@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Bebas_Neue } from "next/font/google";
+import { Bebas_Neue, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const bebas_neue = Bebas_Neue({
   variable: "--font-bebas-neue",
@@ -19,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${bebas_neue.className} antialiased p-5`}>
         {children}
       </body>

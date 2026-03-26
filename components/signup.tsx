@@ -7,24 +7,15 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "@/lib/firebase";
 
 function Signup() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const routeAfterLogin = async (uid: string) => {
-    const profileRef = doc(db, "profiles", uid);
-    const profileSnap = await getDoc(profileRef);
-
-    if (profileSnap.exists()) {
-      router.push("/");
-      return;
-    }
-
-    router.push("/profil");
+  const routeAfterLogin = async () => {
+    router.push("/");
   };
 
   useEffect(() => {
@@ -34,7 +25,7 @@ function Signup() {
       return;
     }
 
-    void routeAfterLogin(currentUser.uid);
+    void routeAfterLogin();
   }, []);
 
   const handleGoogleLogin = async () => {
@@ -47,8 +38,8 @@ function Signup() {
         prompt: "select_account",
       });
 
-      const credential = await signInWithPopup(auth, provider);
-      await routeAfterLogin(credential.user.uid);
+      await signInWithPopup(auth, provider);
+      await routeAfterLogin();
     } catch (error) {
       console.error(error);
       setErrorMessage("Innlogging med Google feilet. Prøv igjen.");
@@ -64,8 +55,8 @@ function Signup() {
     try {
       const provider = new FacebookAuthProvider();
 
-      const credential = await signInWithPopup(auth, provider);
-      await routeAfterLogin(credential.user.uid);
+      await signInWithPopup(auth, provider);
+      await routeAfterLogin();
     } catch (error) {
       console.error(error);
       setErrorMessage("Innlogging med Facebook feilet. Prøv igjen.");

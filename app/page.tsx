@@ -2,26 +2,83 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Signup from "@/components/signup";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import GuestList from "@/components/guest-list";
 import UserFooter from "@/components/user-footer";
 import Image from "next/image";
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 
 export default function Home() {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingAttendance, setLoadingAttendance] = useState(false);
+  const [isAttending, setIsAttending] = useState(false);
+  const [attendError, setAttendError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
       setUser(nextUser);
-      setLoading(false);
+
+      if (!nextUser) {
+        setIsAttending(false);
+        setAttendError(null);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const profileSnap = await getDoc(doc(db, "profiles", nextUser.uid));
+        setIsAttending(profileSnap.exists());
+      } catch (error) {
+        console.error(error);
+        setAttendError("Kunne ikke hente påmeldingsstatus.");
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
   }, []);
+
+  const handleAttend = async () => {
+    if (!user) {
+      return;
+    }
+
+    setLoadingAttendance(true);
+    setAttendError(null);
+
+    try {
+      const fallbackName =
+        user.displayName ?? user.email?.split("@")[0] ?? "Ukjent gjest";
+
+      await setDoc(
+        doc(db, "profiles", user.uid),
+        {
+          uid: user.uid,
+          email: user.email ?? "",
+          displayName: fallbackName,
+          bio: "",
+          photoURL: user.photoURL ?? "",
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+
+      setIsAttending(true);
+      router.push("/profil");
+    } catch (error) {
+      console.error(error);
+      setAttendError("Kunne ikke melde deg på. Prøv igjen.");
+    } finally {
+      setLoadingAttendance(false);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut(auth);
@@ -72,7 +129,24 @@ export default function Home() {
       <section>
         {loading ? <p>Laster...</p> : null}
         {!loading && !user ? <Signup /> : null}
-        {!loading && user ? <GuestList /> : null}
+
+        {!loading && user && !isAttending ? (
+          <section className="card space-y-3 mb-24">
+            <h2>Kommer du?</h2>
+            <p>Klikk under for å bekrefte at du kommer på bursdagen.</p>
+            <button
+              type="button"
+              className="button"
+              onClick={handleAttend}
+              disabled={loadingAttendance}
+            >
+              {loadingAttendance ? "Melder på..." : "Jeg kommer"}
+            </button>
+            {attendError ? <p className="text-red-700">{attendError}</p> : null}
+          </section>
+        ) : null}
+
+        {!loading && user && isAttending ? <GuestList /> : null}
       </section>
 
       {!loading && user ? (

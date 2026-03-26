@@ -24,7 +24,7 @@ function Signup() {
       return;
     }
 
-    router.push("/profile");
+    router.push("/profil");
   };
 
   useEffect(() => {

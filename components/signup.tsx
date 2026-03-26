@@ -76,7 +76,7 @@ function Signup() {
 
   return (
     <section className="card text-center max-w-3xl mx-auto">
-      <h2>Meld meg på</h2>
+      <h2>Meld deg på</h2>
       <div className="flex flex-col sm:flex-row gap-2 justify-center">
         <button
           type="button"

@@ -52,8 +52,8 @@ export default function GuestList() {
   }, []);
 
   return (
-    <section className="space-y-4 pb-24 card">
-      <h2 className="text-center">Påmeldte</h2>
+    <section className="space-y-4 mb-24 card">
+      <h2 className="text-center">Påmeldte ({guests.length})</h2>
 
       {loading ? <p>Laster gjester...</p> : null}
       {error ? <p className="text-red-700">{error}</p> : null}
@@ -65,29 +65,27 @@ export default function GuestList() {
       {!loading && !error && guests.length > 0 ? (
         <ul className="grid gap-4">
           {guests.map((guest) => (
-            <li key={guest.id}>
-              <div className="flex gap-3 items-center">
-                {guest.photoURL ? (
-                  <Image
-                    width={50}
-                    height={50}
-                    src={guest.photoURL}
-                    alt={`Profilbilde av ${guest.displayName}`}
-                    className="rounded-full object-cover aspect-square size-20"
-                  />
-                ) : (
-                  <CircleUser
-                    className="size-16 stroke-white"
-                    strokeWidth={0.5}
-                  />
-                )}
+            <li key={guest.id} className="flex gap-3 items-center">
+              {guest.photoURL ? (
+                <Image
+                  width={50}
+                  height={50}
+                  src={guest.photoURL}
+                  alt={`Profilbilde av ${guest.displayName}`}
+                  className="rounded-full object-cover aspect-square size-20"
+                />
+              ) : (
+                <CircleUser
+                  className="size-16 stroke-white"
+                  strokeWidth={0.5}
+                />
+              )}
 
-                <div className="space-y-1">
-                  <p className="font-bold">{guest.displayName}</p>
-                  {guest.bio && (
-                    <p className="text-muted-foreground">{guest.bio}</p>
-                  )}
-                </div>
+              <div className="space-y-1">
+                <p className="font-bold">{guest.displayName}</p>
+                {guest.bio && (
+                  <p className="text-muted-foreground">{guest.bio}</p>
+                )}
               </div>
             </li>
           ))}

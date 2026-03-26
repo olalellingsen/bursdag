@@ -8,6 +8,7 @@ import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import GuestList from "@/components/guest-list";
 import UserFooter from "@/components/user-footer";
 import Image from "next/image";
+import { AddToCalendarButton } from "add-to-calendar-button-react";
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -40,6 +41,18 @@ export default function Home() {
             Fyrhuset Kuba
           </Link>
         </h2>
+
+        <div className="flex justify-center sm:justify-start">
+          <AddToCalendarButton
+            name="Olas bursdag"
+            options={["Apple", "Google"]}
+            location="Fyrhuset Kuba, Oslo"
+            startDate="2026-04-16T19:00:00"
+            endDate="2026-04-16T23:00:00"
+            timeZone="Europe/Oslo"
+            size="small"
+          />
+        </div>
 
         <p>
           Jeg blir 28 år og vil ha deg med på feiringen! 🎉 Jeg har booket 2.

@@ -3,16 +3,22 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  FacebookAuthProvider,
   GoogleAuthProvider,
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
+const EMAIL_FOR_SIGN_IN_KEY = "emailForSignIn";
+
 function Signup() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const routeAfterLogin = async () => {
     router.push("/");
@@ -21,11 +27,49 @@ function Signup() {
   useEffect(() => {
     const currentUser = auth.currentUser;
 
-    if (!currentUser) {
+    if (currentUser) {
+      void routeAfterLogin();
       return;
     }
 
-    void routeAfterLogin();
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (!isSignInWithEmailLink(auth, window.location.href)) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    const savedEmail = window.localStorage.getItem(EMAIL_FOR_SIGN_IN_KEY);
+    const fallbackEmail = window.prompt(
+      "Bekreft e-posten din for å fullføre innlogging:",
+    );
+    const resolvedEmail = (savedEmail ?? fallbackEmail ?? "").trim();
+
+    if (!resolvedEmail) {
+      setErrorMessage(
+        "Mangler e-post for å fullføre innlogging med e-postlenke.",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    void signInWithEmailLink(auth, resolvedEmail, window.location.href)
+      .then(async () => {
+        window.localStorage.removeItem(EMAIL_FOR_SIGN_IN_KEY);
+        await routeAfterLogin();
+      })
+      .catch((error) => {
+        console.error(error);
+        setErrorMessage("Kunne ikke fullføre innlogging med e-postlenke.");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   }, []);
 
   const handleGoogleLogin = async () => {
@@ -48,18 +92,33 @@ function Signup() {
     }
   };
 
-  const handleFacebookLogin = async () => {
+  const handleEmailLinkLogin = async () => {
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail) {
+      setErrorMessage("Skriv inn e-postadressen din først.");
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
-      const provider = new FacebookAuthProvider();
+      const actionCodeSettings = {
+        url: `${window.location.origin}/`,
+        handleCodeInApp: true,
+      };
 
-      await signInWithPopup(auth, provider);
-      await routeAfterLogin();
+      await sendSignInLinkToEmail(auth, normalizedEmail, actionCodeSettings);
+      window.localStorage.setItem(EMAIL_FOR_SIGN_IN_KEY, normalizedEmail);
+      setSuccessMessage(
+        "Jeg har sendt deg en innloggingslenke på e-post (den kan havne i søppelposten).",
+      );
+      setEmail("");
     } catch (error) {
       console.error(error);
-      setErrorMessage("Innlogging med Facebook feilet. Prøv igjen.");
+      setErrorMessage("Kunne ikke sende innloggingslenke på e-post.");
     } finally {
       setIsSubmitting(false);
     }
@@ -68,26 +127,41 @@ function Signup() {
   return (
     <section className="card text-center max-w-3xl mx-auto">
       <h2>Meld deg på</h2>
-      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+      <div className="space-y-2">
         <button
           type="button"
           onClick={handleGoogleLogin}
           disabled={isSubmitting}
           className="button"
         >
-          {isSubmitting ? "Logger inn..." : "Logg inn med Google"}
+          {isSubmitting ? "Logger inn..." : "med Google"}
         </button>
 
+        <p>... eller med lenke på e-post</p>
+
+        <div>
+          <input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="navn@epost.no"
+            className="border border-background rounded-lg w-full max-w-sm px-3 py-2"
+            autoComplete="email"
+            disabled={isSubmitting}
+          />
+        </div>
         <button
           type="button"
-          onClick={handleFacebookLogin}
+          onClick={handleEmailLinkLogin}
           disabled={isSubmitting}
           className="button"
         >
-          {isSubmitting ? "Logger inn..." : "Logg inn med Facebook"}
+          {isSubmitting ? "Sender lenke..." : "Send lenke"}
         </button>
       </div>
+
       {errorMessage ? <p className="text-red-700">{errorMessage}</p> : null}
+      {successMessage ? <p>{successMessage}</p> : null}
     </section>
   );
 }

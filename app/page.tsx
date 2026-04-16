@@ -105,7 +105,7 @@ export default function Home() {
             options={["Apple", "Google"]}
             location="Fyrhuset Kuba, Oslo"
             startDate="2026-04-16T19:00:00"
-            endDate="2026-04-16T23:00:00"
+            endDate="2026-04-16T23:59:00"
             timeZone="Europe/Oslo"
             size="small"
           />

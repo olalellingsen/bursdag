@@ -113,9 +113,10 @@ export default function Home() {
 
         <p>
           Jeg blir 28 år og vil ha deg med på feiringen! 🎉 Jeg har booket 2.
-          etasjen på Fyrhuset fra 19.00 og til det stenger kl 23.00, også kan vi
+          etasjen på Fyrhuset fra 19:00 og til det stenger kl 00:00, også kan vi
           sikkert dra videre til et sted på f.eks Løkka etter dette for de som
-          vil! Håper du har mulighet til å komme, og ta gjerne med deg din +1☺️
+          vil! Møt gjerne presist kl 19:00! Håper du har mulighet til å komme,
+          og ta gjerne med deg din +1☺️
         </p>
         <Image
           src="/img.jpeg"
